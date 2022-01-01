@@ -1,6 +1,10 @@
 from selenium.webdriver.common import by
 from selenium.webdriver.common.by import By
 
+import sys
+sys.path.insert(0, 'AmazonwithPython_2_POM\Resources')
+
+
 class Locators():
     # HOME PAGE Locators
     SEARCH_TEXT_BOX = (By.ID, "twotabsearchtextbox")

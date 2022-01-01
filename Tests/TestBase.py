@@ -1,6 +1,6 @@
 import unittest
 from selenium import webdriver
-from Resources.Locators import Locators
+from Resources import Locators
 from Pages import HomePage, SearchResultsPage, ProductDetailsPage, SubCartPage, CartPage, SignInPage
 from Resources.TestData import TestData
 
@@ -43,14 +43,14 @@ class Test_AMZN_Search(Test_AMZN_Search_Base):
         # instantiate an object of SearchResultsPage class passing in the driver as parameter.
         # this will allow the newly created object to have access to the browser and perform
         # operations further.
-        self.searchResultsPage=SearchResultsPage(self.homePage.driver)
+        self.searchResultsPage = SearchResultsPage(self.homePage.driver)
         # assert if the search term is present in the title of the Amazon's Search Results Page
         self.assertIn(TestData.SEARCH_TERM,self.searchResultsPage.driver.title)
         # assert that the search term indeed return some results.
         self.assertNotIn(TestData.NO_RESULTS_TEXT,self.searchResultsPage.driver.page_source)
     
     def test_user_should_be_able_to_add_item_to_cart(self):
-        self.homePage=HomePage(self.driver)
+        self.homePage = HomePage(self.driver)
         self.homePage.search()
         self.searchResultsPage=SearchResultsPage(self.homePage.driver)
         # click on the first search result
