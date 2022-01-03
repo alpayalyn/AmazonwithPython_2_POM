@@ -1,8 +1,8 @@
 import unittest
 from selenium import webdriver
-from Resources import Locators
-from Pages import HomePage, SearchResultsPage, ProductDetailsPage, SubCartPage, SignInPage, WishListPage
-from Resources.TestData import TestData
+from Resources2 import Locators
+from Pages2 import BasePage, CategoryPage, HomePage, LoginPage, ProductPage, SearchPage, WishListPage
+from Resources2.TestData import TestData
 
 # Base Class for the tests
 class Test_AMZN_Search_Base(unittest.TestCase):
@@ -33,40 +33,40 @@ class Test_AMZN_Search(Test_AMZN_Search_Base):
         # 
         self.homePage = HomePage(self.driver)
         # assert if the title of Home Page contains Amazon.in
-        self.assertIn(TestData.HOME_PAGE_TITLE, self.homePage.driver.title)
+        self.assertIn(TestData.HOMEPAGE_TITLE, self.homePage.driver.title)
 
-    def test_user_should_be_able_to_search(self):
-        self.homePage=HomePage(self.driver)
+    def test_to_login(self):
+        self.loginPage = LoginPage(self.homePage.driver)
+
+    def test_to_search(self):
+        self.searchPage=SearchPage(self.loginPage.driver)
         # search for the search term on Home Page. The search term would be picked from
         # test data file
-        self.homePage.search()
+        self.searchPage.click_search_result()
         # instantiate an object of SearchResultsPage class passing in the driver as parameter.
         # this will allow the newly created object to have access to the browser and perform
         # operations further.
-        self.searchResultsPage = SearchResultsPage(self.homePage.driver)
+        self.categoryPage = CategoryPage(self.searchPage.driver)
+
+    def test_search_results(self):
         # assert if the search term is present in the title of the Amazon's Search Results Page
-        self.assertIn(TestData.SEARCH_TERM,self.searchResultsPage.driver.title)
+        self.assertIn(TestData.TEXT_TO_BE_SEARCHED, self.categoryPage.driver.title)
         # assert that the search term indeed return some results.
-        self.assertNotIn(TestData.NO_RESULTS_TEXT,self.searchResultsPage.driver.page_source)
+        self.assertNotIn(TestData.NO_RESULTS_TEXT, self.categoryPage.driver.page_source)
+
+    def test_go_to_second_page_second_product(self):
+        # 2.sf mı asserti atılabilir.
+        self.categoryPage.clicked_to_the_second()
+        self.categoryPage.third_product_select()
     
-    def test_user_should_be_able_to_add_item_to_cart(self):
-        self.homePage = HomePage(self.driver)
-        self.homePage.search()
-        self.searchResultsPage=SearchResultsPage(self.homePage.driver)
-        # click on the first search result
-        self.searchResultsPage.click_search_result()
-        # since the click on search result loads the product in new tab, switch to new tab
-        self.searchResultsPage.driver.switch_to.window(self.searchResultsPage.driver.window_handles[1])
-        # instantiate an object of Product Details Page class
-        self.productDetailsPage=ProductDetailsPage(self.searchResultsPage.driver)
+    def test_add_item_to_cart(self):
+        self.productPage = ProductPage(self.categoryPage.driver)
         # click on the Add To Cart button
-        self.productDetailsPage.click_add_to_cart_button()
+        self.productPage.click_add_to_cart_button()
         # instantiate an object of Sub Cart Page class
-        self.subCartPage=SubCartPage(self.productDetailsPage.driver)
         # assert if the sub cart page has indeed loaded
-        self.assertTrue(self.subCartPage.is_enabled(Locators.SUB_CART_DIV))
+        self.assertIn(ProductPage.)
         # assert if the product was added to the cart successfully
-        self.assertTrue(self.searchResultsPage.is_visible(Locators.PROCEED_TO_BUY_BUTTON))
 
     def test_user_should_be_able_to_delete_item_from_cart(self):
         self.homePage=HomePage(self.driver)
